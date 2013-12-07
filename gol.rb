@@ -14,7 +14,11 @@ end
 
 class Dead
   def transition(cell, neighbour_count)
-    cell.die
+    transitions = {
+      3 => :live
+    }
+
+    cell.send(transitions.fetch(neighbour_count, :die))
   end
 end
 
@@ -64,6 +68,12 @@ describe "A Game of Life cell" do
       cell = Cell.new Dead.new
       expect(cell).to receive(:die)
       cell.transition 0
+    end
+
+    it "becomes alive when it has exactly 3 neighbours" do
+      cell = Cell.new Dead.new
+      expect(cell).to receive(:live)
+      cell.transition 3
     end
   end
 end
