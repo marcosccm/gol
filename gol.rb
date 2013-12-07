@@ -13,6 +13,9 @@ class Alive
 end
 
 class Dead
+  def transition(cell, neighbour_count)
+    cell.die
+  end
 end
 
 class Cell
@@ -54,5 +57,13 @@ describe "A Game of Life cell" do
     cell = Cell.new Alive.new
     expect(cell).to receive(:die)
     cell.transition 4
+  end
+
+  context 'a dead cell' do
+    it "remains dead when it has 0 neighbours" do
+      cell = Cell.new Dead.new
+      expect(cell).to receive(:die)
+      cell.transition 0
+    end
   end
 end
