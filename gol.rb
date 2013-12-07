@@ -4,7 +4,8 @@ require 'rspec'
 class Alive
   def transition(cell, neighbour_count)
     transitions = {
-      2 => :live
+      2 => :live,
+      3 => :live
     }
 
     cell.send(transitions.fetch(neighbour_count, :die))
@@ -41,5 +42,17 @@ describe "A Game of Life cell" do
     cell = Cell.new Alive.new
     expect(cell).to receive(:live)
     cell.transition 2
+  end
+
+  it "lives when it has 3 neighbours" do
+    cell = Cell.new Alive.new
+    expect(cell).to receive(:live)
+    cell.transition 3
+  end
+
+  it "dies when it has more than 3 neighbours" do
+    cell = Cell.new Alive.new
+    expect(cell).to receive(:die)
+    cell.transition 4
   end
 end
