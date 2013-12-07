@@ -39,41 +39,51 @@ class Cell
 end
 
 describe "A Game of Life cell" do
-  it "dies when it has less then 2 neighbours" do
-    cell = Cell.new Alive.new
-    expect(cell).to receive(:die)
-    cell.transition 0
-  end
+  context "a live cell" do
+    let(:cell) { Cell.new(Alive.new) }
 
-  it "lives when it has 2 or 3 neighbours" do
-    cell = Cell.new Alive.new
-    expect(cell).to receive(:live)
-    cell.transition 2
-  end
-
-  it "lives when it has 3 neighbours" do
-    cell = Cell.new Alive.new
-    expect(cell).to receive(:live)
-    cell.transition 3
-  end
-
-  it "dies when it has more than 3 neighbours" do
-    cell = Cell.new Alive.new
-    expect(cell).to receive(:die)
-    cell.transition 4
-  end
-
-  context 'a dead cell' do
-    it "remains dead when it has 0 neighbours" do
-      cell = Cell.new Dead.new
+    it "dies when it has less then 2 neighbours" do
       expect(cell).to receive(:die)
       cell.transition 0
     end
 
-    it "becomes alive when it has exactly 3 neighbours" do
-      cell = Cell.new Dead.new
+    it "lives when it has 2 or 3 neighbours" do
+      expect(cell).to receive(:live)
+      cell.transition 2
+    end
+
+    it "lives when it has 3 neighbours" do
       expect(cell).to receive(:live)
       cell.transition 3
+    end
+
+    it "dies when it has more than 3 neighbours" do
+      expect(cell).to receive(:die)
+      cell.transition 4
+    end
+  end
+
+  context 'a dead cell' do
+    let(:cell) { Cell.new(Dead.new) }
+
+    it "remains dead when it has 0 neighbours" do
+      expect(cell).to receive(:die)
+      cell.transition 0
+    end
+
+    it "remains dead when it has 1 neighbours" do
+      expect(cell).to receive(:die)
+      cell.transition 1
+    end
+
+    it "becomes alive when it has exactly 3 neighbours" do
+      expect(cell).to receive(:live)
+      cell.transition 3
+    end
+
+    it "remains dead with more than 3 neighbours" do
+      expect(cell).to receive(:die)
+      cell.transition 4
     end
   end
 end
