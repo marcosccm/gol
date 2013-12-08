@@ -12,7 +12,7 @@ class Alive
   end
 
   def live_count(counter)
-    counter.inc
+    counter.next
   end
 end
 
@@ -137,8 +137,8 @@ describe "A Game of Life cell" do
     end
 
     it "counts itself as alive" do
-      counter = double :inc
-      expect(counter).to receive :inc
+      counter = double :next
+      expect(counter).to receive :next
       cell.live_count counter
     end
   end
