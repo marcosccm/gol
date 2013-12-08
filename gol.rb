@@ -64,7 +64,7 @@ class Cell
   end
 
   def is_adjacent_to(another, adjacents)
-    adjacents.push self if @position.is_adjacent_to another.position
+    adjacents.push self if @position.adjacent_to? another.position
   end
 end
 
@@ -98,9 +98,10 @@ describe "A Position" do
 end
 
 describe "A Game of Life cell" do
+  let(:position) { double }
+
   it "knows if it's adjacent to another cell" do
-    position = double
-    allow(position).to receive(:is_adjacent_to).and_return true
+    position = double(adjacent_to?: true)
 
     cell = Cell.new(Alive.new, position)
 
@@ -113,7 +114,7 @@ describe "A Game of Life cell" do
   end
 
   context "a live cell" do
-    let(:cell) { Cell.new(Alive.new, Position.new(0, 0)) }
+    let(:cell) { Cell.new(Alive.new, position) }
 
     it "dies when it has less then 2 neighbours" do
       expect(cell).to receive(:die)
@@ -143,7 +144,7 @@ describe "A Game of Life cell" do
   end
 
   context 'a dead cell' do
-    let(:cell) { Cell.new(Dead.new, Position.new(0, 0)) }
+    let(:cell) { Cell.new(Dead.new, position) }
 
     it "remains dead when it has 0 neighbours" do
       expect(cell).to receive(:die)
