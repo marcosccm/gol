@@ -30,6 +30,17 @@ class Dead
 end
 
 class Position < Struct.new(:x, :y)
+  def adjacent_to? b
+    dx = self.x - b.x
+    dy = self.y - b.y
+
+    return false if [dx, dy] == [0,0]
+    dx.between?(-1,1) && dy.between?(-1,1)
+  end
+
+  def to_s
+    "(#{x}, #{y})"
+  end
 end
 
 class Cell
@@ -54,6 +65,35 @@ class Cell
 
   def is_adjacent_to(another, adjacents)
     adjacents.push self if @position.is_adjacent_to another.position
+  end
+end
+
+describe "A Position" do
+  [
+    { a: Position.new(0, 0), b: Position.new(0,1) },
+    { a: Position.new(0, 0), b: Position.new(1,0) },
+    { a: Position.new(0, 0), b: Position.new(-1,1) },
+    { a: Position.new(0, 0), b: Position.new(-1,0) },
+    { a: Position.new(0, 0), b: Position.new(1,1) },
+    { a: Position.new(0, 0), b: Position.new(-1,-1) }
+  ].each do |args|
+    it "#{args[:a]} is adjacent to #{args[:b]}" do
+      expect(args[:a]).to be_adjacent_to args[:b]
+    end
+  end
+
+  [
+    { a: Position.new(0, 0), b: Position.new(2,2) },
+    { a: Position.new(0, 0), b: Position.new(2,0) }
+  ].each do |args|
+    it "#{args[:a]} is not adjacent to #{args[:b]}" do
+      expect(args[:a]).to_not be_adjacent_to args[:b]
+    end
+  end
+
+  it "it's not adjacent to itself" do
+    a = Position.new(2, 2)
+    expect(a).to_not be_adjacent_to a
   end
 end
 
