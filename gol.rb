@@ -29,9 +29,13 @@ class Dead
   end
 end
 
+class Position < Struct.new(:x, :y)
+end
+
 class Cell
-  def initialize state
+  def initialize state, position
     @state = state
+    @position = position
   end
 
   def transition neighbour_count
@@ -47,11 +51,29 @@ class Cell
   def live_count(counter)
     @state.live_count counter
   end
+
+  def is_adjacent_to(another, adjacents)
+    adjacents.push self if @position.is_adjacent_to another.position
+  end
 end
 
 describe "A Game of Life cell" do
+  it "knows if it's adjacent to another cell" do
+    position = double
+    allow(position).to receive(:is_adjacent_to).and_return true
+
+    cell = Cell.new(Alive.new, position)
+
+    adjacent = double(position: nil)
+    adjacents = double
+
+    expect(adjacents).to receive(:push).with(cell)
+
+    cell.is_adjacent_to adjacent, adjacents
+  end
+
   context "a live cell" do
-    let(:cell) { Cell.new(Alive.new) }
+    let(:cell) { Cell.new(Alive.new, Position.new(0, 0)) }
 
     it "dies when it has less then 2 neighbours" do
       expect(cell).to receive(:die)
@@ -81,7 +103,7 @@ describe "A Game of Life cell" do
   end
 
   context 'a dead cell' do
-    let(:cell) { Cell.new(Dead.new) }
+    let(:cell) { Cell.new(Dead.new, Position.new(0, 0)) }
 
     it "remains dead when it has 0 neighbours" do
       expect(cell).to receive(:die)
