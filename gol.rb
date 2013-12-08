@@ -10,6 +10,10 @@ class Alive
 
     cell.send(transitions.fetch(neighbour_count, :die))
   end
+
+  def live_count(counter)
+    counter.inc
+  end
 end
 
 class Dead
@@ -19,6 +23,9 @@ class Dead
     }
 
     cell.send(transitions.fetch(neighbour_count, :die))
+  end
+
+  def live_count(counter)
   end
 end
 
@@ -35,6 +42,10 @@ class Cell
   end
 
   def die
+  end
+
+  def live_count(counter)
+    @state.live_count counter
   end
 end
 
@@ -61,6 +72,12 @@ describe "A Game of Life cell" do
       expect(cell).to receive(:die)
       cell.transition 4
     end
+
+    it "counts itself as alive" do
+      counter = double :inc
+      expect(counter).to receive :inc
+      cell.live_count counter
+    end
   end
 
   context 'a dead cell' do
@@ -84,6 +101,12 @@ describe "A Game of Life cell" do
     it "remains dead with more than 3 neighbours" do
       expect(cell).to receive(:die)
       cell.transition 4
+    end
+
+    it "doesn't count itself as alive" do
+      counter = double :inc
+      expect(counter).to_not receive :inc
+      cell.live_count counter
     end
   end
 end
