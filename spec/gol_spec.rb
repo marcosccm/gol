@@ -2,6 +2,23 @@ require "rspec"
 
 require_relative "../lib/gol"
 
+describe "The World" do
+  let(:cells) do
+    [
+      alive(0,0), alive(0,1),
+      dead(0,0), dead(1,1)
+    ]
+  end
+
+  subject(:world) { World.new(cells) }
+
+  it "can move to the next state of an initial cell group" do
+    expect(world.cells.map(&:print)).to eq ["*", "*", " ", " "]
+    world.next_turn
+    expect(world.cells.map(&:print)).to eq [" ", " ", " ", " "]
+  end
+end
+
 describe "A Position" do
   [
     { a: Position.new(0, 0), b: Position.new(0,1) },
@@ -106,4 +123,12 @@ describe "A Game of Life cell" do
       cell.live_count counter
     end
   end
+end
+
+def alive(x,y)
+  Cell.new(Alive, Position.new(x,y))
+end
+
+def dead(x,y)
+  Cell.new(Dead, Position.new(x,y))
 end
