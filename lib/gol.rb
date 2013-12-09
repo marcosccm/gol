@@ -40,7 +40,7 @@ class Dead
   end
 
   def self.print
-    " "
+    "_"
   end
 end
 
@@ -93,8 +93,8 @@ end
 
 class Printer
   def print(cells)
-    max = cells.max_by { |cell| cell.position.x }.position.x
-    cells.each_slice(max + 1) do |group|
+    groups = cells.group_by { |cell| cell.position.y }
+    groups.map do |y, group|
       puts group.map { |c| c.print }.join
     end
   end
